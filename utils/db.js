@@ -1,6 +1,12 @@
 import { MongoClient } from 'mongodb';
 
+/**
+ * Represents a MongoDb client
+ */
 class DBClient {
+/**
+ * Create a new MongoDB instance
+ */
   constructor () {
     const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || 27017;
@@ -8,19 +14,31 @@ class DBClient {
 
     const uri = `mongodb://${host}:${port}/${database}`;
 
-    this.client = new MongoClient(uri);
+    this.client = new MongoClient(uri, { useUnifiedTopology: true });
     this.client.connect();
   }
 
-  async isAlive () {
+  /**
+ * checks if the client is connected
+ * @returns {boolean}
+ */
+  isAlive () {
     return this.client.isConnected();
   }
 
+  /**
+ * Retrieves the number of users
+ * @returns {Promise<Number>}
+ */
   async nbUsers () {
     const usersCollection = this.client.db().collection('users');
     return usersCollection.countDocuments();
   }
 
+  /**
+ * Retrieves the number of files
+ * @returns {Promise<Number>}
+ */
   async nbFiles () {
     const filesCollection = this.client.db().collection('files');
     return filesCollection.countDocuments();
