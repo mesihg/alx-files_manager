@@ -4,6 +4,9 @@ import { createClient } from 'redis';
  * Represents a Redis client class
  */
 class RedisClient {
+  /**
+   * Create a new Redis instance
+   */
   constructor () {
     this.client = createClient();
     this.isConnected = true;
