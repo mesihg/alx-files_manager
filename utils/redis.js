@@ -7,8 +7,9 @@ class RedisClient {
   constructor () {
     this.client = createClient();
     this.isConnected = true;
-    this.client.on('error', (error) => {
-      console.error(error);
+    this.client.on('error', (err) => {
+      console.error('Redis client failed to connect:', err.message || err.toString());
+      this.isConnected = false;
     });
 
     this.client.on('connect', () => {
