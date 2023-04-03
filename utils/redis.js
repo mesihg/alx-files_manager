@@ -21,18 +21,18 @@ class RedisClient {
   }
 
   /**
-  * Check if the client is connected to redis server
-  * @returns {boolean}
-  */
+   * Check if the client is connected to redis server
+   * @returns {boolean}
+   */
   isAlive () {
     return this.isConnected;
   }
 
   /**
- * Retrieves the value of the given key
- * @param {String} key The key of the item to retrieve
- * @returns {String | Object}
- */
+   * Retrieves the value of the given key
+   * @param {String} key The key of the item to retrieve
+   * @returns {String | Object}
+   */
   async get (key) {
     return new Promise((resolve, reject) => {
       this.client.get(key, (error, result) => {
@@ -45,12 +45,12 @@ class RedisClient {
   }
 
   /**
- * Set a key and its value with its duration
- * @param {String} key the key of the item to be set
- * @param {String | Number | Boolean} value to the item
- * @param {Number} duration of the expire time of the item
- * @returns {Promise<void>}
- */
+   * Set a key and its value with its duration
+   * @param {String} key the key of the item to be set
+   * @param {String | Number | Boolean} value to the item
+   * @param {Number} duration of the expire time of the item
+   * @returns {Promise<void>}
+   */
   async set (key, value, duration) {
     return new Promise((resolve, reject) => {
       this.client.setex(key, duration, value, (error, result) => {
@@ -63,10 +63,10 @@ class RedisClient {
   }
 
   /**
- * Removes the value of  given a key
- * @param {String} key the key of the item to remove
- * @returns {Promise<void>}
- */
+   * Removes the value of  given a key
+   * @param {String} key the key of the item to remove
+   * @returns {Promise<void>}
+   */
   async del (key) {
     return new Promise((resolve, reject) => {
       this.client.del(key, (error, result) => {
