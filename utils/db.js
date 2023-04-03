@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import Collection from 'mongodb/lib/collection';
 
 /**
  * Represents a MongoDb client
@@ -42,6 +43,22 @@ class DBClient {
   async nbFiles () {
     const filesCollection = this.client.db().collection('files');
     return filesCollection.countDocuments();
+  }
+
+  /**
+ * Retrieves a reference to the users collection
+ * @returns {Promise<Collection>}
+ */
+  async usersCollection () {
+    return this.client.db().collection('users');
+  }
+
+  /**
+ * Retrieves a reference to the files collection
+ * @returns {Promise<Collection>}
+ */
+  async filesCollection () {
+    return this.client.db().collection('files');
   }
 }
 
