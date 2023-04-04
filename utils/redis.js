@@ -1,7 +1,9 @@
 import { createClient } from 'redis';
+import { promisify } from 'util';
 
 /**
- * Represents a Redis client class
+ * @class RedisClient
+ * @description Represents a Redis client class
  */
 class RedisClient {
   /**
@@ -9,17 +11,9 @@ class RedisClient {
    */
   constructor () {
     this.client = createClient();
-    this.isConnected = true;
+    this.getClient = promisify(this.client.get).bind(this.client);
     this.client.on('error', (err) => {
-      console.error(err);
-      this.isConnected = false;
-    });
-
-    this.client.on('connect', (err, result) => {
-      if (err) {
-        this.isConnected = false;
-      }
-      this.isConnected = true;
+      console.error(`Redis client not connected: ${err.message}`);
     });
   }
 
@@ -28,7 +22,7 @@ class RedisClient {
    * @returns {boolean}
    */
   isAlive () {
-    return this.isConnected;
+    return this.client.connected;
   }
 
   /**
@@ -37,14 +31,8 @@ class RedisClient {
    * @returns {String | Object}
    */
   async get (key) {
-    return new Promise((resolve, reject) => {
-      this.client.get(key, (error, result) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(result);
-      });
-    });
+    const value = await this.getClient(key);
+    return value;
   }
 
   /**
@@ -55,14 +43,7 @@ class RedisClient {
    * @returns {Promise<void>}
    */
   async set (key, value, duration) {
-    return new Promise((resolve, reject) => {
-      this.client.setex(key, duration, value, (error, result) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(result);
-      });
-    });
+    this.client.setex(key, duration, value);
   }
 
   /**
@@ -71,14 +52,7 @@ class RedisClient {
    * @returns {Promise<void>}
    */
   async del (key) {
-    return new Promise((resolve, reject) => {
-      this.client.del(key, (error, result) => {
-        if (error) {
-          reject(error);
-        }
-        resolve(result);
-      });
-    });
+    this.client.del(key);
   }
 }
 
