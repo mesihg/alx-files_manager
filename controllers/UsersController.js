@@ -24,4 +24,9 @@ export default class UsersController {
     const userId = userInfo.insertedId.toString();
     res.status(201).json({ email, id: userId });
   }
+
+  static getMe (req, res) {
+    const { user } = req;
+    res.status(200).json({ email: user.email, id: user._id.toString() });
+  }
 }
