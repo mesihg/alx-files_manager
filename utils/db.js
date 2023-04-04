@@ -3,6 +3,7 @@ import { MongoClient } from "mongodb";
 import Collection from "mongodb/lib/collection";
 
 /**
+ * Represents a MongoDb client
  * @class DBClient
  * @description Represents a MongoDb client
  */
