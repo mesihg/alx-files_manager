@@ -1,6 +1,6 @@
-import { MongoClient } from "mongodb";
+import { MongoClient } from 'mongodb';
 // eslint-disable-next-line no-unused-vars
-import Collection from "mongodb/lib/collection";
+import Collection from 'mongodb/lib/collection';
 
 /**
  * Represents a MongoDb client
@@ -11,10 +11,10 @@ class DBClient {
   /**
    * Create a new MongoDB instance
    */
-  constructor() {
-    const host = process.env.DB_HOST || "localhost";
+  constructor () {
+    const host = process.env.DB_HOST || 'localhost';
     const port = process.env.DB_PORT || 27017;
-    const database = process.env.DB_DATABASE || "files_manager";
+    const database = process.env.DB_DATABASE || 'files_manager';
 
     const uri = `mongodb://${host}:${port}/${database}`;
 
@@ -26,7 +26,7 @@ class DBClient {
    * checks if the client is connected
    * @returns {boolean}
    */
-  isAlive() {
+  isAlive () {
     return this.client.isConnected();
   }
 
@@ -34,8 +34,8 @@ class DBClient {
    * Retrieves the number of users
    * @returns {Promise<Number>}
    */
-  async nbUsers() {
-    const usersCollection = this.client.db().collection("users");
+  async nbUsers () {
+    const usersCollection = this.client.db().collection('users');
     return usersCollection.countDocuments();
   }
 
@@ -43,8 +43,8 @@ class DBClient {
    * Retrieves the number of files
    * @returns {Promise<Number>}
    */
-  async nbFiles() {
-    const filesCollection = this.client.db().collection("files");
+  async nbFiles () {
+    const filesCollection = this.client.db().collection('files');
     return filesCollection.countDocuments();
   }
 
@@ -52,16 +52,16 @@ class DBClient {
    * Retrieves a reference to the users collection
    * @returns {Promise<Collection>}
    */
-  async usersCollection() {
-    return this.client.db().collection("users");
+  async usersCollection () {
+    return this.client.db().collection('users');
   }
 
   /**
    * Retrieves a reference to the files collection
    * @returns {Promise<Collection>}
    */
-  async filesCollection() {
-    return this.client.db().collection("files");
+  async filesCollection () {
+    return this.client.db().collection('files');
   }
 }
 
