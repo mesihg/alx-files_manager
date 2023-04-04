@@ -1,22 +1,31 @@
 import { MongoClient } from 'mongodb';
+// eslint-disable-next-line no-unused-vars
 import Collection from 'mongodb/lib/collection';
 
+const DB_HOST = process.env.DB_HOST || 'localhost';
+const DB_PORT = process.env.DB_PORT || 27017;
+const DB_DATABASE = process.env.DB_DATABASE || 'files_manager';
+const uri = `mongodb://${DB_HOST}:${DB_PORT}}`;
+
 /**
- * Represents a MongoDb client
+ * @class DBClient
+ * @description Represents a MongoDb client
  */
 class DBClient {
 /**
  * Create a new MongoDB instance
  */
   constructor () {
-    const host = process.env.DB_HOST || 'localhost';
-    const port = process.env.DB_PORT || 27017;
-    const database = process.env.DB_DATABASE || 'files_manager';
-
-    const uri = `mongodb://${host}:${port}/${database}`;
-
-    this.client = new MongoClient(uri, { useUnifiedTopology: true });
-    this.client.connect();
+    MongoClient.connect(uri, (error, client) => {
+      if (error) {
+        console.log(error.message);
+        this.client = false;
+        return;
+      }
+      this.client = client.db(DB_DATABASE);
+      this.users = this.db.collection('users');
+      this.files = this.db.collection('files');
+    });
   }
 
   /**
@@ -24,7 +33,7 @@ class DBClient {
  * @returns {boolean}
  */
   isAlive () {
-    return this.client.isConnected();
+    return !!this.client;
   }
 
   /**
@@ -32,8 +41,7 @@ class DBClient {
  * @returns {Promise<Number>}
  */
   async nbUsers () {
-    const usersCollection = this.client.db().collection('users');
-    return usersCollection.countDocuments();
+    return this.users.countDocuments();
   }
 
   /**
@@ -41,8 +49,7 @@ class DBClient {
  * @returns {Promise<Number>}
  */
   async nbFiles () {
-    const filesCollection = this.client.db().collection('files');
-    return filesCollection.countDocuments();
+    return this.files.countDocuments();
   }
 
   /**
@@ -50,7 +57,7 @@ class DBClient {
  * @returns {Promise<Collection>}
  */
   async usersCollection () {
-    return this.client.db().collection('users');
+    return this.users;
   }
 
   /**
@@ -58,9 +65,9 @@ class DBClient {
  * @returns {Promise<Collection>}
  */
   async filesCollection () {
-    return this.client.db().collection('files');
+    return this.files;
   }
 }
 
-export const dbClient = new DBClient();
+const dbClient = new DBClient();
 export default dbClient;
