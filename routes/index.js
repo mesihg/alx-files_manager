@@ -17,6 +17,8 @@ const loadRoutes = (api) => {
   api.post('/files', FilesController.postUpload);
   api.get('/files/:id', FilesController.getShow);
   api.get('/files', FilesController.getIndex);
+  api.put('/files/:id/publish', FilesController.putPublish);
+  api.put('/files/:id/publish', FilesController.putUnpublish);
 };
 
 export default loadRoutes;
