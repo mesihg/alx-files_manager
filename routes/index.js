@@ -15,6 +15,8 @@ const loadRoutes = (api) => {
   api.get('/disconnect', AuthController.getDisconnect);
   api.get('/users/me', UsersController.getMe);
   api.post('/files', FilesController.postUpload);
+  api.get('/files/:id', FilesController.getShow);
+  api.get('/files', FilesController.getIndex);
 };
 
 export default loadRoutes;
