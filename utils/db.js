@@ -27,6 +27,7 @@ class DBClient {
    * @returns {boolean}
    */
   isAlive () {
+    // return this.client.topology.isConnected();
     return this.client.isConnected();
   }
 
