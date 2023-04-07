@@ -13,14 +13,8 @@ class AuthController {
       return;
     }
 
-    const authTokenDecoded = Buffer.from(authToken.split(' ')[1],
-      'base64').toString('utf8');
-
-    const [email, password] = authTokenDecoded.split(':');
-    if (!email || !password) {
-      res.status(401).send({ error: 'Unauthorized' });
-      return;
-    }
+    const authTokenData = Buffer.from(authToken, 'base64').toString();
+    const [email, password] = authTokenData.split(':');
 
     const hashedPassword = sha1(password);
     const users = dbClient.db.collection('users');
