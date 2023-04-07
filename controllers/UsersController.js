@@ -1,61 +1,62 @@
 import sha1 from 'sha1';
 import {
-  ObjectID
+  ObjectID,
 } from 'mongodb';
 import Queue from 'bull';
 import dbClient from '../utils/db';
 import redisClient from '../utils/redis';
+
 const userQueue = new Queue('userQueue', 'redis://127.0.0.1:6379');
 class UsersController {
-  static postNew (request, response) {
+  static postNew(request, response) {
     const {
-      email
+      email,
     } = request.body;
     const {
-      password
+      password,
     } = request.body;
     if (!email) {
       response.status(400).json({
-        error: 'Missing email'
+        error: 'Missing email',
       });
       return;
     }
     if (!password) {
       response.status(400).json({
-        error: 'Missing password'
+        error: 'Missing password',
       });
       return;
     }
     const users = dbClient.db.collection('users');
     users.findOne({
-      email
+      email,
     }, (err, user) => {
       if (err) {
         response.status(401).json({ error: 'Unauthorized' });
       }
       if (user) {
         response.status(400).json({
-          error: 'Already exist'
+          error: 'Already exist',
         });
       } else {
         const hashedPassword = sha1(password);
         users.insertOne({
           email,
-          password: hashedPassword
+          password: hashedPassword,
         }).then((result) => {
           response.status(201).json({
             id: result.insertedId,
-            email
+            email,
           });
           userQueue.add({
-            userId: result.insertedId
+            userId: result.insertedId,
           });
         }).catch((error) => console.log(error));
       }
     });
   }
 
-  static async getMe (request, response) {
+  static async getMe(request, response) {
     const token = request.header('X-Token');
     const key = `auth_${token}`;
     const userId = await redisClient.get(key);
@@ -63,23 +64,23 @@ class UsersController {
       const users = dbClient.db.collection('users');
       const idObject = new ObjectID(userId);
       users.findOne({
-        _id: idObject
+        _id: idObject,
       }, (err, user) => {
         if (user) {
           response.status(200).json({
             id: userId,
-            email: user.email
+            email: user.email,
           });
         } if (err) {
           response.status(401).json({
-            error: 'Unauthorized'
+            error: 'Unauthorized',
           });
         }
       });
     } else {
       console.log('Hupatikani!');
       response.status(401).json({
-        error: 'Unauthorized'
+        error: 'Unauthorized',
       });
     }
   }
